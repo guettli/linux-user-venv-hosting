@@ -38,7 +38,18 @@ add:
 export EDITOR=vim
 . bin/activate
 . .env
+
+foo@server> logout
 ```
+
+```
+# connect again
+ssh foo@server
+
+# Check that the environment variables are set:
+foo@server> echo $PGDATABASE
+```
+
 
 
 
