@@ -53,9 +53,19 @@ foo@server> echo $PGDATABASE
 foo@server> pip install -U pip wheel
 
 # Install my code
-foo@server> pip install -e git+ssh://git@github.com/YOU/yourproject.git#egg=yourproject
+foo@server> pip install -e git+ssh://git@github.com/YOU/foo.git#egg=foo
 ```
 
+```
+# DB
+hroot@server# su - postgres
+
+# If the linux user name is equal to the database user name, then
+# you don't need to configure a password, if you use PostgreSQL
+# via localhost.
+
+postgres@server> createuser foo
+postgres@server> createdb -O foo foo
 ```
 
 
