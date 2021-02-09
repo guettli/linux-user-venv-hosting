@@ -68,6 +68,71 @@ postgres@server> createuser foo
 postgres@server> createdb -O foo foo
 ```
 
+```
+# If you updated your code, you can get the new code like this:
+foo@server> cd ~/src/foo
+foo@server> git pull
+```
+
+```
+# Run Migrations
+foo@server> manage.py migrate
+```
+
+```
+# Systemd: Start gunicorn
+
+# file /etc/systemd/system/gunicorn-foo.service
+
+[Unit]
+Description=gunicorn daemon foo
+Requires=gunicorn-foo.socket
+After=network.target
+
+[Service]
+Type=notify
+# the specific user that our service will run as
+User=foo
+Group=foo
+# another option for an even more restricted service is
+# DynamicUser=yes
+# see http://0pointer.net/blog/dynamic-users-with-systemd.html
+RuntimeDirectory=gunicorn
+WorkingDirectory=/home/foo
+ExecStart=/home/foo/bin/gunicorn mysite.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```
+# /etc/systemd/system/gunicorn-foo.socket
+
+[Unit]
+Description=gunicorn foo socket
+
+[Socket]
+ListenStream=/run/gunicorn-foo.sock
+# Our service won't need permissions for the socket, since it
+# inherits the file descriptor by socket activation
+# only the nginx daemon will need access to the socket
+User=www-data
+# Optionally restrict the socket permissions even more.
+# Mode=600
+
+[Install]
+WantedBy=sockets.target
+```
+
+```
+root@server# systemctl enable --now gunicorn-foo.socket
+```
+
+Webserver config see: https://docs.gunicorn.org/en/stable/deploy.html
 
 
 
