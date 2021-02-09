@@ -48,6 +48,14 @@ ssh foo@server
 
 # Check that the environment variables are set:
 foo@server> echo $PGDATABASE
+
+# Update basics
+foo@server> pip install -U pip wheel
+
+# Install my code
+foo@server> pip install -e git+ssh://git@github.com/YOU/yourproject.git#egg=yourproject
+```
+
 ```
 
 
